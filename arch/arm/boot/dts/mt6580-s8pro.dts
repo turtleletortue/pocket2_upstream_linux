@@ -7,7 +7,7 @@
 
 /dts-v1/;
 #include "mt6580.dtsi"
-#include <dt-bindings/phy/phy.h>
+#include <dt-bindings/gpio/gpio.h>
 
 / {
 	model = "MediaTek MT6580 ZGPAX s8pro";
@@ -116,48 +116,21 @@
             interrupts = <0x0 0x4 0x4>;
 	};
 */
-    
-	usb0: usb@11100000 {
-		compatible = "mediatek,mt7623-xhci",
-				"mediatek,mt8173-xhci";
-		reg = <0 0x11100000 0 0x10000>,
-			<0 0x11100000 0 0x10000>;
-		reg-names = "mac", "ippc";
-//		interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_LOW>;
-//		clocks = <&hifsys CLK_HIFSYS_USB0PHY>,
-//			<&topckgen CLK_TOP_ETHIF_SEL>;
-//		clock-names = "sys_ck", "ref_ck";
-//		power-domains = <&scpsys MT2701_POWER_DOMAIN_HIF>;
-		phys = <&u2port0 PHY_TYPE_USB2>, <&u3port0 PHY_TYPE_USB3>;
-		status = "disabled";
+
+	extcon_usb: extcon_iddig {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&pio 44 GPIO_ACTIVE_HIGH>;
 	};
 
-	u3phy0: usb-phy@11100000 {
-		compatible = "mediatek,mt7623-u3phy",
-			     "mediatek,mt2701-u3phy";
-		reg = <0 0x11100000 0 0x10000>;
-		#address-cells = <2>;
-		#size-cells = <2>;
-		ranges;
-		status = "disabled";
-
-		u2port0: usb-phy@11100800 {
-			reg = <0 0x11100800 0 0x01000>;
-//			clocks = <&topckgen CLK_TOP_USB_PHY48M>;
-//			clock-names = "ref";
-			#phy-cells = <1>;
-			status = "okay";
-		};
-
-		u3port0: usb-phy@11100900 {
-			reg = <0 0x11100900 0 0x10000>;
-//			clocks = <&clk26m>;
-//			clock-names = "ref";
-			#phy-cells = <1>;
-			status = "okay";
-		};
+	usb_vbus: regulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&pio 45 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
 	};
-
+	
 	memory {
 		device_type = "memory";
 		reg = <0x80000000 0x20000000>;
@@ -166,4 +139,15 @@
 
 &uart0 {
 	status = "okay";
+};
+
+&usb2 {
+	status = "okay";
+	usb_con: connector{
+		compatible = "usb-b-connector";
+		label = "micro-USB";
+		type = "micro";
+		extcon = <&extcon_usb>;
+		vbus-supply = <&usb_vbus>;
+	};
 };

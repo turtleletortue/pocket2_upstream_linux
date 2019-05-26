@@ -7,6 +7,9 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/mt2701-clk.h>
+#include <dt-bindings/phy/phy.h>
+#include <dt-bindings/power/mt2701-power.h>
 
 / {
 	compatible = "mediatek,mt6580";
@@ -118,4 +121,38 @@
 		clocks = <&uart_clk>;
 		status = "disabled";
 	};
+
+	usb2: usb@11100000 {
+		compatible = "mediatek,mt6580-musb",
+			     "mediatek,mtk-musb";
+		reg = <0 0x11100000 0 0x1000>;
+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-names = "mc";
+		phys = <&u2port2 PHY_TYPE_USB2>;
+		dr_mode = "otg";
+		clocks = <&pericfg CLK_PERI_USB0>,
+			 <&pericfg CLK_PERI_USB0_MCU>,
+			 <&pericfg CLK_PERI_USB_SLV>;
+		clock-names = "main","mcu","univpll";
+		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
+		status = "disabled";
+	};
+
+	u2phy0: usb-phy@11110000 {
+		compatible = "mediatek,generic-tphy-v1";
+		reg = <0 0x11110000 0 0x0800>;
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+		status = "okay";
+
+		u2port2: usb-phy@1a1c4800 {
+			reg = <0 0x11110800 0 0x0100>;
+			clocks = <&topckgen CLK_TOP_USB_PHY48M>;
+			clock-names = "ref";
+			#phy-cells = <1>;
+			status = "okay";
+		};
+	};
+
 };
