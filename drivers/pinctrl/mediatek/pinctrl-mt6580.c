@@ -34,6 +34,8 @@ static const struct mtk_pinctrl_devdata mt6580_pinctrl_data = {
 	.spec_ies_smt_set = mt6580_ies_smt_set,
 	.spec_pinmux_set = mt6580_spec_pinmux_set,
 	.spec_dir_set = mt6580_spec_dir_set, */
+	.ies_offset = MTK_PINCTRL_NOT_SUPPORT,
+	.smt_offset = MTK_PINCTRL_NOT_SUPPORT,
 	.dir_offset = 0x0000,
 	.pullen_offset = 0x0100,
 	.pullsel_offset = 0x0200,
@@ -50,12 +52,12 @@ static const struct mtk_pinctrl_devdata mt6580_pinctrl_data = {
 		.ports     = 6,
 		.ap_num    = 224,
 		.db_cnt    = 16,
-	},
+	}, 
 };
 
 static int mt6580_pinctrl_probe(struct platform_device *pdev)
 {
-	pr_warn("mt6580 pinctrl probe\n");
+	pr_err("mt6580 pinctrl probe\n");
 	return mtk_pctrl_init(pdev, &mt6580_pinctrl_data, NULL);
 }
 
