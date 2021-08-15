@@ -1383,7 +1383,7 @@ static int __init mtk_scpsys_early_init(void)
 			return -ENXIO;
 		}
 
-		spm_cpu_base = ioremap_nocache(regs.start,
+		spm_cpu_base = ioremap(regs.start,
 					       resource_size(&regs));
 		if (!spm_cpu_base) {
 			pr_err("%s: Unable to map I/O memory\n", __func__);
