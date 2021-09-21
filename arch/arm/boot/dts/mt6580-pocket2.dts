@@ -19,10 +19,15 @@
 	};
 
 	chosen {
-        bootargs = "console=tty0 no_console_suspend=1 console=ttyMT0,921600n1 root=/dev/ram initrd=0x84000000,0x400000 loglevel=8 ramoops.mem_address=0x83f10000 ramoops.mem_size=0xe0000 ramoops.console_size=0x10000";
+        bootargs = "console=tty0 no_console_suspend=1 console=ttyS0,921600n8 console=ttyMT0,921600n1 root=/dev/ram initrd=0x84000000,0x400000 loglevel=8 ramoops.mem_address=0x83f10000 ramoops.mem_size=0xe0000 ramoops.console_size=0x10000";
 		linux,initrd-start = <0x84000000>;
 		linux,initrd-end = <0x85133837>;
 		stdout-path = "serial0:921600n8";
+        atag,videolfb-fb_base = <0x9E800000>;
+	    atag,videolfb-islcmfound = <1>;
+	    atag,videolfb-fps= <6000>;
+	    atag,videolfb-vramSize= <0x01800000>;
+	    atag,videolfb-lcmname= "st7703_800x640";
 	};
 
 	cpu_opp_table: opp-table {
